@@ -1,0 +1,8 @@
+{
+  "network": "preprod",
+  "contract": "age_gate",
+  "contractAddress": "cf7668c47edbbd5d6c5de324f901c6ce3da3a830e3fcd917dbbb7e42b506a092",
+  "transactionHash": "1870092717a4f4f0f911e3a6824ae9cca34edf405dbd5c847beedcce23f0ddb8",
+  "transactionId": 498528,
+  "verifiedBy": "Midnight Preprod indexer"
+}
