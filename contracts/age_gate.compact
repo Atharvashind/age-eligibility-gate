@@ -1,0 +1,43 @@
+pragma language_version >= 0.22;
+
+import CompactStandardLibrary;
+
+export ledger min_age_requirement: Uint<32>;
+export ledger trusted_issuers: Map<Bytes<32>, Boolean>;
+
+export ledger admin: Bytes<32>;
+
+constructor(min_age: Uint<32>, admin_pk: Bytes<32>) {
+  min_age_requirement = disclose(min_age);
+  admin = disclose(admin_pk);
+}
+
+witness localSecretKey(): Bytes<32>;
+witness birthdate(): Uint<32>;
+witness issuerSignature(): Bytes<32>;
+
+export circuit registerIssuer(issuer_pk: Bytes<32>): [] {
+  assert(disclose(publicKey(localSecretKey())) == admin, "Only admin can register issuers");
+  trusted_issuers.insert(disclose(issuer_pk), true);
+}
+
+export circuit verifyAge(current_time: Uint<32>): Boolean {
+  // Verify issuer signature on credential
+  const issuer_pk = verifyCredential(birthdate(), issuerSignature());
+  assert(trusted_issuers.member(disclose(issuer_pk)), "Credential not signed by trusted issuer");
+
+  // Assert age threshold
+  const age = disclose(current_time) - birthdate();
+  assert(age >= min_age_requirement, "User is under the required age");
+  
+  return disclose(true);
+}
+
+export circuit verifyCredential(bdate: Uint<32>, sig: Bytes<32>): Bytes<32> {
+  // In a real application, this checks a cryptographic signature.
+  return sig;
+}
+
+export circuit publicKey(sk: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([pad(32, "agegate:pk:"), sk]);
+}
