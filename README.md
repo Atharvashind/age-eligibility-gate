@@ -1,5 +1,7 @@
 # Age Eligibility Gate
 
+![Frontend CI](https://github.com/Atharvashind/age-eligibility-gate/actions/workflows/frontend-ci.yml/badge.svg?branch=main) ![Contract CI](https://github.com/Atharvashind/age-eligibility-gate/actions/workflows/contract-ci.yml/badge.svg?branch=main)
+
 An issuer-led eligibility service that answers “does this person meet the minimum age policy?” without revealing a date of birth.
 
 ## Why it exists
@@ -52,3 +54,6 @@ Every push is checked by the frontend build workflow and the Compact compile/tes
 
 Demo video: [open the credential-gate walkthrough](https://drive.google.com/file/d/1VGilF7x1SVB0WBUXBUjU0oAMZ11UQmwg/view?usp=sharing).
 
+## Verification
+
+Privacy is the product feature: the relying party learns only the eligibility result, while the birth date and credential details remain private. Run `npm test`, `npm run compile`, and `npm run build`; the five contract scenarios are documented in [TESTING.md](./TESTING.md), the product scope is in [PROPOSAL.md](./PROPOSAL.md), and both CI workflows run on every push and pull request.
