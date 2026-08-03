@@ -19,14 +19,18 @@ The `age_gate` ledger keeps the minimum age, trusted issuer map, and administrat
 
 ## Deployment record
 
-| Network | Midnight Preprod |
+| Network | Midnight Preview |
 | --- | --- |
 | Compact contract | `age_gate` |
-| Address | `cf7668c47edbbd5d6c5de324f901c6ce3da3a830e3fcd917dbbb7e42b506a092` |
-| Deployment transaction | `1870092717a4f4f0f911e3a6824ae9cca34edf405dbd5c847beedcce23f0ddb8` |
+| Address | `2f8b772c1f9434cd30baf3fcce6e61cd1baf1d7100d271d78f7c5ac32f1a8c82` |
+| Deployment transaction | `00eda70afd3703e514310e9aae8ebb695a128ed347252b993f2dab03ba64f69349` |
+| Deployer | `mn_addr_preview10rdle78pj20g0ahkqmcntqe0h7sl60rxd546z5rucer3gsu9n96sqxm5qa` |
+| Deployed at | `2026-08-03T18:45:22.286Z` |
 | Indexer status | Confirmed |
 
 ## Developer setup
+
+Preview test funds come from the [official Midnight Preview faucet](https://faucet.preview.midnight.network/).
 
 ```bash
 npm install
@@ -36,7 +40,7 @@ npm run build
 npm run dev
 ```
 
-To exercise deployment locally, configure the connected Preprod wallet and provider variables before running:
+To exercise deployment locally, configure the connected Preview wallet and provider variables before running:
 
 ```bash
 npm run deploy
@@ -44,7 +48,7 @@ npm run deploy
 
 ## Trust model
 
-The issuer is trusted to attest the credential; the contract verifies the issuer registration and policy proof. The application does not claim to establish legal identity. It demonstrates selective disclosure on Midnight Preprod.
+The issuer is trusted to attest the credential; the contract verifies the issuer registration and policy proof. The application does not claim to establish legal identity. It demonstrates selective disclosure on Midnight Preview.
 
 Never use real identity documents or recovery phrases in this demo.
 
