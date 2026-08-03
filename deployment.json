@@ -1,8 +1,8 @@
 {
-  "network": "preprod",
-  "contract": "age_gate",
-  "contractAddress": "cf7668c47edbbd5d6c5de324f901c6ce3da3a830e3fcd917dbbb7e42b506a092",
-  "transactionHash": "1870092717a4f4f0f911e3a6824ae9cca34edf405dbd5c847beedcce23f0ddb8",
-  "transactionId": 498528,
-  "verifiedBy": "Midnight Preprod indexer"
+  "contractAddress": "2f8b772c1f9434cd30baf3fcce6e61cd1baf1d7100d271d78f7c5ac32f1a8c82",
+  "network": "preview",
+  "deployedAt": "2026-08-03T18:45:22.286Z",
+  "deployer": "mn_addr_preview10rdle78pj20g0ahkqmcntqe0h7sl60rxd546z5rucer3gsu9n96sqxm5qa",
+  "transactionHash": "00eda70afd3703e514310e9aae8ebb695a128ed347252b993f2dab03ba64f69349",
+  "minAge": "18"
 }
