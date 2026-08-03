@@ -6,7 +6,10 @@
     "compile": "npx nightforge compile",
     "deploy": "node deploy.mjs",
     "test": "vitest run",
+    "prepare:age-proof-assets": "node scripts/sync-zk-assets.mjs",
+    "predev": "npm run prepare:age-proof-assets",
     "dev": "vite",
+    "prebuild": "npm run prepare:age-proof-assets",
     "build": "tsc && vite build"
   },
   "devDependencies": {

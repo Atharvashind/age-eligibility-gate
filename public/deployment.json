@@ -1,0 +1,9 @@
+{
+  "network": "preview",
+  "contract": "age_gate",
+  "contractAddress": "2f8b772c1f9434cd30baf3fcce6e61cd1baf1d7100d271d78f7c5ac32f1a8c82",
+  "transactionHash": "00eda70afd3703e514310e9aae8ebb695a128ed347252b993f2dab03ba64f69349",
+  "deployer": "mn_addr_preview10rdle78pj20g0ahkqmcntqe0h7sl60rxd546z5rucer3gsu9n96sqxm5qa",
+  "deployedAt": "2026-08-03T18:45:22.286Z",
+  "verifiedBy": "Midnight Preview indexer"
+}
