@@ -1,4 +1,5 @@
 {
+  "contractName": "age_gate",
   "contractAddress": "2f8b772c1f9434cd30baf3fcce6e61cd1baf1d7100d271d78f7c5ac32f1a8c82",
   "network": "preview",
   "deployedAt": "2026-08-03T18:45:22.286Z",
