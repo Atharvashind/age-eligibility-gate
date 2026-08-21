@@ -4,6 +4,10 @@
 
 An issuer-led eligibility service that answers “does this person meet the minimum age policy?” without revealing a date of birth.
 
+## Evaluation dossier
+
+Start with the [idea submission](./PROPOSAL.md), inspect the [age-policy scenarios](./src/test/age_gate.test.ts), then reproduce them with the [test protocol](./TESTING.md). The confirmed chain record is in [`deployment.json`](./deployment.json).
+
 ## Why it exists
 
 Age checks usually force an applicant to disclose more identity data than the relying party needs. This application gives an issuer a registration surface and a verifier a simple policy result. The credential desk shows the configured threshold, trusted issuer state, wallet readiness, proof status, and live deployment identity.

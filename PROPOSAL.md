@@ -1,5 +1,9 @@
 # Product Proposal: Age Eligibility Gate
 
+**Category:** Identity/credentials  
+**Maintainer:** `Atharvashind`  
+**Evidence:** Midnight Preview deployment plus five automated scenarios
+
 ## Problem
 
 Age-gated services often collect a full birthdate when they only need an eligibility answer.
@@ -25,4 +29,3 @@ The policy threshold and issuer registration are auditable. Birthdate, credentia
 - Under-age credentials fail.
 - Untrusted issuers fail.
 - Tests cover initialization, issuer registration, valid proof, and rejection paths.
-
