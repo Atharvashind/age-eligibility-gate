@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Shield, Play, Database, History, Wallet, Cpu, Lock, Key, Calendar, ClipboardCheck } from 'lucide-react';
-import { deployAgegateContract, submitAgegateCircuit } from './midnightClient';
+import { submitAgegateCircuit } from './midnightClient';
+import { verifyAgeGateDeployment, validateAgeGateDeploymentRuntime } from './runtimeConfig';
+
+const RUNTIME = validateAgeGateDeploymentRuntime({
+  networkId: import.meta.env.VITE_NETWORK_ID,
+  contractAddress: import.meta.env.VITE_CONTRACT_ADDRESS,
+  faucetUrl: import.meta.env.VITE_FAUCET_URL,
+  demoMode: import.meta.env.VITE_DEMO_MODE,
+  production: import.meta.env.PROD,
+});
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -14,14 +23,13 @@ export default function App() {
 
   const [contractDeployed, setContractDeployed] = useState(false);
   const [contractAddress, setContractAddress] = useState<string | null>(null);
+  const [runtimeIssue, setRuntimeIssue] = useState<string | null>(null);
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployStep, setDeployStep] = useState(0);
 
   const [ledger, setLedger] = useState({ minimum_age: 18, trusted_issuers: "Govt_Passport_Division", eligibility_verified: "false" });
   const [formValues, setFormValues] = useState({ birth_year: 2004, gov_sig: "sig:govt:passport:valid" });
-  const [logs, setLogs] = useState([
-    { hash: '0x88b...d891', timestamp: '2026-07-08 09:35:00', status: 'VERIFIED', details: 'Validated threshold credential' }
-  ]);
+  const [logs, setLogs] = useState<any[]>([]);
   const [isProving, setIsProving] = useState(false);
   const [provingStep, setProvingStep] = useState(0);
 
@@ -39,12 +47,25 @@ export default function App() {
   ];
 
   useEffect(() => {
-    fetch('/deployment.json').then(response => response.ok ? response.json() : null).then(deployment => {
-      if (deployment?.contractAddress) {
-        setContractAddress(deployment.contractAddress);
+    fetch('/deployment.json')
+      .then(response => {
+        if (!response.ok) throw new Error('Age Eligibility Gate: deployment.json could not be loaded.');
+        return response.json();
+      })
+      .then(deployment => {
+        const verified = verifyAgeGateDeployment(deployment);
+        if (RUNTIME.contractAddress && RUNTIME.contractAddress !== verified.contractAddress) {
+          throw new Error('Age Eligibility Gate: environment address does not match deployment evidence.');
+        }
+        setContractAddress(verified.contractAddress);
         setContractDeployed(true);
-      }
-    }).catch(() => undefined);
+        setRuntimeIssue(null);
+      })
+      .catch(error => {
+        setContractAddress(null);
+        setContractDeployed(false);
+        setRuntimeIssue(error instanceof Error ? error.message : 'Age Eligibility Gate: configuration failed.');
+      });
     const detectLace = () => {
       const hasMidnightWallet = Object.values((window as any).midnight ?? {}).some((candidate: any) => typeof candidate?.connect === 'function');
       setLaceDetected(hasMidnightWallet);
@@ -66,7 +87,7 @@ export default function App() {
         throw new Error('No Midnight wallet connector was detected. Install 1AM or Lace and unlock it.');
       }
 
-      const connected = await wallet.connect(import.meta.env.VITE_NETWORK_ID || 'preview');
+      const connected = await wallet.connect(RUNTIME.networkId);
       (window as any).__midnightConnectedWallet = connected;
       const addressInfo = await connected.getUnshieldedAddress();
       const balances = await connected.getUnshieldedBalances();
@@ -100,55 +121,17 @@ export default function App() {
 
   const requestFaucet = () => {
     if (!walletConnected) return;
-    window.open(import.meta.env.VITE_FAUCET_URL || 'https://faucet.preview.midnight.network/', '_blank', 'noopener,noreferrer');
+    window.open(RUNTIME.faucetUrl, '_blank', 'noopener,noreferrer');
     logTransaction('—', 'FAUCET OPENED', '—', 'Funding must be confirmed by the official Midnight Preview faucet and wallet balance refresh.');
   };
 
   const deployContractAction = async () => {
-    if (import.meta.env.VITE_CONTRACT_ADDRESS) {
-      setContractAddress(import.meta.env.VITE_CONTRACT_ADDRESS);
-      setContractDeployed(true);
-      logTransaction('—', 'DEPLOYMENT CONFIGURED', '—', 'Using the deployed Midnight contract configured for this environment.');
+    if (!contractAddress || runtimeIssue) {
+      alert('Age Eligibility Gate: no verified Preview deployment is available.');
       return;
     }
-    if (!connectedWallet) return;
-    setIsDeploying(true);
-    try {
-      const result = await deployAgegateContract(connectedWallet);
-      setContractAddress(result.contractAddress);
-      setContractDeployed(true);
-      logTransaction(result.txId, 'CONTRACT DEPLOYMENT SUBMITTED', '—', 'age_gate deployed on Midnight Preview at ' + result.contractAddress);
-    } catch (err) {
-      console.error('Browser deployment failed:', err);
-      alert(err instanceof Error ? err.message : 'Browser deployment failed.');
-    } finally {
-      setIsDeploying(false);
-    }
-    return;
-    if (import.meta.env.VITE_DEMO_MODE !== 'true') {
-      alert('Live contract deployment is handled by deploy.mjs. Set VITE_DEMO_MODE=true only for local UI demos.');
-      return;
-    }
-    if (!walletConnected) return;
-    setIsDeploying(true);
-    setDeployStep(0);
-    const interval = setInterval(() => {
-      setDeployStep(prev => {
-        if (prev < deploySteps.length - 1) {
-          return prev + 1;
-        } else {
-          clearInterval(interval);
-          setTimeout(() => {
-            setContractAddress("midnight1a89vja0928hskla9382hdksla0298a09vja");
-            setContractDeployed(true);
-            setIsDeploying(false);
-            setWalletBalance(prevBal => (parseFloat(prevBal) - 15.5).toFixed(2));
-            logTransaction('0xdep1...77bb', 'CONTRACT DEPLOYED', '-15.50 tNIGHT', 'Deployed age_gate.compact contract onto Preview');
-          }, 800);
-          return prev;
-        }
-      });
-    }, 500);
+    setContractDeployed(true);
+    logTransaction('—', 'VERIFIED DEPLOYMENT ATTACHED', '—', `Using finalized Preview contract ${contractAddress}`);
   };
 
   const verifyAge = async () => {
@@ -163,33 +146,6 @@ export default function App() {
       logTransaction('—', 'TRANSACTION FAILED', '—', err instanceof Error ? err.message : 'Unknown transaction failure');
       return;
     }
-    setIsProving(true);
-    setProvingStep(0);
-    const interval = setInterval(() => {
-      setProvingStep(prev => {
-        if (prev < proofSteps.length - 1) {
-          return prev + 1;
-        } else {
-          clearInterval(interval);
-          setTimeout(() => {
-            const currentYear = new Date().getFullYear();
-            const age = currentYear - Number(formValues.birth_year);
-            const passed = age >= ledger.minimum_age;
-            
-            setLedger(prevLedger => ({
-              ...prevLedger,
-              eligibility_verified: passed ? "true" : "false"
-            }));
-            
-            const randomTx = '0x' + Array.from({length: 8}, () => Math.floor(Math.random()*16).toString(16)).join('') + '...' + Array.from({length: 4}, () => Math.floor(Math.random()*16).toString(16)).join('');
-            logTransaction(randomTx, passed ? 'VERIFIED' : 'REJECTED', '-0.05 tNIGHT', `Asserted age >= ${ledger.minimum_age} privately`);
-            setIsProving(false);
-            setWalletBalance(prevBal => (parseFloat(prevBal) - 0.05).toFixed(2));
-          }, 600);
-          return prev;
-        }
-      });
-    }, 500);
   };
 
   const logTransaction = (hash: string, status: string, fee: string, details: string) => {
@@ -204,6 +160,20 @@ export default function App() {
       ...prev
     ]);
   };
+
+  if (runtimeIssue) {
+    return (
+      <main role="alert" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: '32px', background: '#080b12', color: '#f8fafc' }}>
+        <section style={{ width: 'min(620px, 100%)', border: '1px solid #ef4444', borderRadius: '18px', padding: '28px', background: '#151922' }}>
+          <p style={{ margin: 0, color: '#fca5a5', fontWeight: 800, letterSpacing: '0.08em' }}>SAFE START BLOCKED</p>
+          <h1 style={{ margin: '12px 0', fontSize: 'clamp(1.7rem, 5vw, 2.6rem)' }}>Age Eligibility Gate</h1>
+          <p style={{ lineHeight: 1.65, color: '#cbd5e1' }}>{runtimeIssue}</p>
+          <p style={{ lineHeight: 1.65, color: '#94a3b8' }}>No wallet or contract operation was attempted. Restore this repository's own Preview deployment record, then reload.</p>
+          <button onClick={() => window.location.reload()} style={{ marginTop: '8px', padding: '12px 18px', border: 0, borderRadius: '10px', fontWeight: 800, cursor: 'pointer' }}>Retry configuration</button>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'Outfit, sans-serif' }}>
