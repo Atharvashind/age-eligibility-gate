@@ -23,9 +23,9 @@ describe('Age Eligibility Gate production configuration', () => {
     expect(() => verifyAgeGateDeployment({ ...deployment, transactionHash: 'pending' })).toThrow(/transaction evidence/);
   });
 
-  it('prevents demo mode and network drift in production', () => {
-    expect(() => validateAgeGateDeploymentRuntime({ networkId: 'preprod' })).toThrow(/Preview/);
+  it('accepts supported networks and prevents simulated production mode', () => {
+    expect(validateAgeGateDeploymentRuntime({ networkId: 'preprod' }).networkId).toBe('preprod');
+    expect(() => validateAgeGateDeploymentRuntime({ networkId: 'invalid-network' })).toThrow(/Preview or Preprod/);
     expect(() => validateAgeGateDeploymentRuntime({ production: true, demoMode: 'true' })).toThrow(/forbidden/);
   });
 });
-
