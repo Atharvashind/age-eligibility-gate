@@ -1,6 +1,6 @@
 {
   "cleanUrls": true,
-  "alias": "athrav-c7te.vercel.app",
+  "alias": "age-eligibility-omega.vercel.app",
   "buildCommand": "npm run build",
   "outputDirectory": "dist"
 }
