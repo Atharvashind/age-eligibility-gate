@@ -4,12 +4,12 @@
   "runtime-version": "0.15.0",
   "circuits": [
     {
-      "name": "registerIssuer",
+      "name": "issueCredential",
       "pure": false,
       "proof": true,
       "arguments": [
         {
-          "name": "issuer_pk",
+          "name": "commitment",
           "type": {
             "type-name": "Bytes",
             "length": 32
@@ -28,7 +28,7 @@
       "proof": true,
       "arguments": [
         {
-          "name": "current_time",
+          "name": "current_year",
           "type": {
             "type-name": "Uint",
             "maxval": 4294967295
@@ -40,19 +40,19 @@
       }
     },
     {
-      "name": "verifyCredential",
+      "name": "credentialCommitment",
       "pure": true,
       "proof": false,
       "arguments": [
         {
-          "name": "bdate",
+          "name": "year",
           "type": {
             "type-name": "Uint",
             "maxval": 4294967295
           }
         },
         {
-          "name": "sig",
+          "name": "salt",
           "type": {
             "type-name": "Bytes",
             "length": 32
@@ -94,7 +94,7 @@
       }
     },
     {
-      "name": "birthdate",
+      "name": "birthYear",
       "arguments": [
       ],
       "result type": {
@@ -103,7 +103,7 @@
       }
     },
     {
-      "name": "issuerSignature",
+      "name": "credentialSalt",
       "arguments": [
       ],
       "result type": {

@@ -2,40 +2,40 @@ import type * as __compactRuntime from '@midnight-ntwrk/compact-runtime';
 
 export type Witnesses<PS> = {
   localSecretKey(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, Uint8Array];
-  birthdate(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, bigint];
-  issuerSignature(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, Uint8Array];
+  birthYear(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, bigint];
+  credentialSalt(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, Uint8Array];
 }
 
 export type ImpureCircuits<PS> = {
-  registerIssuer(context: __compactRuntime.CircuitContext<PS>,
-                 issuer_pk_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
-  verifyAge(context: __compactRuntime.CircuitContext<PS>, current_time_0: bigint): __compactRuntime.CircuitResults<PS, boolean>;
+  issueCredential(context: __compactRuntime.CircuitContext<PS>,
+                  commitment_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  verifyAge(context: __compactRuntime.CircuitContext<PS>, current_year_0: bigint): __compactRuntime.CircuitResults<PS, boolean>;
 }
 
 export type ProvableCircuits<PS> = {
-  registerIssuer(context: __compactRuntime.CircuitContext<PS>,
-                 issuer_pk_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
-  verifyAge(context: __compactRuntime.CircuitContext<PS>, current_time_0: bigint): __compactRuntime.CircuitResults<PS, boolean>;
+  issueCredential(context: __compactRuntime.CircuitContext<PS>,
+                  commitment_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  verifyAge(context: __compactRuntime.CircuitContext<PS>, current_year_0: bigint): __compactRuntime.CircuitResults<PS, boolean>;
 }
 
 export type PureCircuits = {
-  verifyCredential(bdate_0: bigint, sig_0: Uint8Array): Uint8Array;
+  credentialCommitment(year_0: bigint, salt_0: Uint8Array): Uint8Array;
   publicKey(sk_0: Uint8Array): Uint8Array;
 }
 
 export type Circuits<PS> = {
-  registerIssuer(context: __compactRuntime.CircuitContext<PS>,
-                 issuer_pk_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
-  verifyAge(context: __compactRuntime.CircuitContext<PS>, current_time_0: bigint): __compactRuntime.CircuitResults<PS, boolean>;
-  verifyCredential(context: __compactRuntime.CircuitContext<PS>,
-                   bdate_0: bigint,
-                   sig_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
+  issueCredential(context: __compactRuntime.CircuitContext<PS>,
+                  commitment_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  verifyAge(context: __compactRuntime.CircuitContext<PS>, current_year_0: bigint): __compactRuntime.CircuitResults<PS, boolean>;
+  credentialCommitment(context: __compactRuntime.CircuitContext<PS>,
+                       year_0: bigint,
+                       salt_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
   publicKey(context: __compactRuntime.CircuitContext<PS>, sk_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
 }
 
 export type Ledger = {
   readonly min_age_requirement: bigint;
-  trusted_issuers: {
+  issued_credentials: {
     isEmpty(): boolean;
     size(): bigint;
     member(key_0: Uint8Array): boolean;

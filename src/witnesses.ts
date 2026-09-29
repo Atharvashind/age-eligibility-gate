@@ -3,35 +3,18 @@ import { WitnessContext } from "@midnight-ntwrk/compact-runtime";
 
 export type AgeGatePrivateState = {
   readonly secretKey: Uint8Array;
-  readonly birthdate: bigint;
-  readonly issuerSignature: Uint8Array;
+  readonly birthYear: bigint;
+  readonly credentialSalt: Uint8Array;
 };
 
-export const createAgeGatePrivateState = (secretKey: Uint8Array, birthdate: bigint, issuerSignature: Uint8Array) => ({
+export const createAgeGatePrivateState = (secretKey: Uint8Array, birthYear: bigint, credentialSalt: Uint8Array) => ({
   secretKey,
-  birthdate,
-  issuerSignature
+  birthYear,
+  credentialSalt,
 });
 
 export const witnesses = {
-  localSecretKey: ({
-    privateState,
-  }: WitnessContext<Ledger, AgeGatePrivateState>): [
-    AgeGatePrivateState,
-    Uint8Array,
-  ] => [privateState, privateState.secretKey],
-
-  birthdate: ({
-    privateState,
-  }: WitnessContext<Ledger, AgeGatePrivateState>): [
-    AgeGatePrivateState,
-    bigint,
-  ] => [privateState, privateState.birthdate],
-
-  issuerSignature: ({
-    privateState,
-  }: WitnessContext<Ledger, AgeGatePrivateState>): [
-    AgeGatePrivateState,
-    Uint8Array,
-  ] => [privateState, privateState.issuerSignature],
+  localSecretKey: ({ privateState }: WitnessContext<Ledger, AgeGatePrivateState>): [AgeGatePrivateState, Uint8Array] => [privateState, privateState.secretKey],
+  birthYear: ({ privateState }: WitnessContext<Ledger, AgeGatePrivateState>): [AgeGatePrivateState, bigint] => [privateState, privateState.birthYear],
+  credentialSalt: ({ privateState }: WitnessContext<Ledger, AgeGatePrivateState>): [AgeGatePrivateState, Uint8Array] => [privateState, privateState.credentialSalt],
 };

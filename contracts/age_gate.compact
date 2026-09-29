@@ -3,7 +3,7 @@ pragma language_version >= 0.22;
 import CompactStandardLibrary;
 
 export ledger min_age_requirement: Uint<32>;
-export ledger trusted_issuers: Map<Bytes<32>, Boolean>;
+export ledger issued_credentials: Map<Bytes<32>, Boolean>;
 
 export ledger admin: Bytes<32>;
 
@@ -13,29 +13,30 @@ constructor(min_age: Uint<32>, admin_pk: Bytes<32>) {
 }
 
 witness localSecretKey(): Bytes<32>;
-witness birthdate(): Uint<32>;
-witness issuerSignature(): Bytes<32>;
+witness birthYear(): Uint<32>;
+witness credentialSalt(): Bytes<32>;
 
-export circuit registerIssuer(issuer_pk: Bytes<32>): [] {
-  assert(disclose(publicKey(localSecretKey())) == admin, "Only admin can register issuers");
-  trusted_issuers.insert(disclose(issuer_pk), true);
+export circuit issueCredential(commitment: Bytes<32>): [] {
+  assert(disclose(publicKey(localSecretKey())) == admin, "Only admin can issue credentials");
+  issued_credentials.insert(disclose(commitment), true);
 }
 
-export circuit verifyAge(current_time: Uint<32>): Boolean {
-  // Verify issuer signature on credential
-  const issuer_pk = verifyCredential(birthdate(), issuerSignature());
-  assert(trusted_issuers.member(disclose(issuer_pk)), "Credential not signed by trusted issuer");
-
-  // Assert age threshold
-  const age = disclose(current_time) - birthdate();
+export circuit verifyAge(current_year: Uint<32>): Boolean {
+  const commitment = credentialCommitment(birthYear(), credentialSalt());
+  assert(issued_credentials.member(disclose(commitment)), "Credential was not issued by the administrator");
+  assert(disclose(current_year) >= birthYear(), "Birth year cannot be in the future");
+  const age = disclose(current_year) - birthYear();
   assert(age >= min_age_requirement, "User is under the required age");
   
   return disclose(true);
 }
 
-export circuit verifyCredential(bdate: Uint<32>, sig: Bytes<32>): Bytes<32> {
-  // In a real application, this checks a cryptographic signature.
-  return sig;
+export circuit credentialCommitment(year: Uint<32>, salt: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "age:credential:"),
+    year as Field as Bytes<32>,
+    salt
+  ]);
 }
 
 export circuit publicKey(sk: Bytes<32>): Bytes<32> {
