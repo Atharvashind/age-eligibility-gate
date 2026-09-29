@@ -36,9 +36,35 @@ An eligibility check system that lets users prove they are of legal age (e.g., o
 ---
 
 ## 5. How to Build & Deploy on Midnight
-To build this project without errors, refer to the master build guide located at the root of the workspace: [BUILD_GUIDE.md](file:///Users/neelsubhashpote/moonlight/BUILD_GUIDE.md). It details how to:
-1. Fix language pragma version mismatches.
-2. Resolve SDK `4.x` dependency issues.
-3. Start the Docker-based local ZK proof server.
-4. Deploy the contract using a custom `deploy.mjs` script.
-5. Prevent DUST gas errors.
+To build and verify this application independently:
+1. **Prerequisites:** Node.js 20+, npm 10+, and Compact compiler 0.30.0 (compact 0.5.1).
+2. **Install Dependencies:** Run 
+up to date, audited 27 packages in 782ms
+
+3 packages are looking for funding
+  run `npm fund` for details
+
+4 vulnerabilities (1 moderate, 3 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details. in this project directory.
+3. **Compile Circuits:** Run  to build the Compact zero-knowledge circuits and generate verification keys.
+4. **Run Test Suite:** Run  to execute all smart contract circuit tests and witness checks.
+5. **Local Proof Server:** (Optional) Start the Docker proof server via .
+6. **Launch Frontend:** Run 
+> moonlight-dashboard@1.0.0 dev
+> vite
+
+
+  VITE v5.4.21  ready in 207 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+3:37:48 PM [vite] page reload jaynam/dist/index.html
+3:37:50 PM [vite] page reload jaynam/dist/index.html to start the local web application.

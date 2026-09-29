@@ -10,11 +10,11 @@ Age-gated services often collect a full birthdate when they only need an eligibi
 
 ## Proposed product
 
-Age Eligibility Gate lets a trusted issuer register a credential and lets a verifier request an 18+ policy result without publishing the birthdate.
+Age Eligibility Gate lets an authorized issuer anchor a one-way credential commitment and lets a verifier request an 18+ policy result without publishing the birth year.
 
 ## Privacy model
 
-The policy threshold and issuer registration are auditable. Birthdate, credential signature payload, and identity context remain private witness inputs.
+The policy threshold and issued commitment are auditable. Birth year, credential salt, user secret, and identity context remain private witness inputs.
 
 ## User journey
 
@@ -25,7 +25,7 @@ The policy threshold and issuer registration are auditable. Birthdate, credentia
 
 ## Success criteria
 
-- Trusted issuers can be registered.
+- The administrator can issue credential commitments.
 - Under-age credentials fail.
-- Untrusted issuers fail.
+- Unissued commitments fail.
 - Tests cover initialization, issuer registration, valid proof, and rejection paths.
